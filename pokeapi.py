@@ -60,8 +60,6 @@ def evolution(pokemon):
     else:
         print(f"Failed to retrieve data. Status code: {response.status_code}")
 
-    return url
-
 def generation(pokemon):
     url = "https://pokeapi.co/api/v2/pokemon-species/" + pokemon
 
@@ -119,18 +117,36 @@ def abilities(ability):
         data = response.json()
         print_non_empty(data)
 
+def moveset(pokemon):
+    url = "https://pokeapi.co/api/v2/pokemon/"  + pokemon
+
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        print_non_empty(data["moves"])
+
+def moves(move):
+    url = "https://pokeapi.co/api/v2/move/"  + move
+
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        print(data["effect_entries"]["effect"])
+
 
 def menu():
     #natures = ['hardy','lonely','adamant','naughty','brave','bold','docile','impish','lax','relaxed','modest','mild','bashful','rash','quiet','calm','gentle','careful','quirky','sassy','timid','hasty','jolly','naive','serious']
 
-    user_input = input("What do you want to know?\n\n1.Pokemon\n2.Abilities\n3.Nature: \n\n")
+    user_input = input("What do you want to know?\n\n1.Pokemon\n2.Abilities\n3.Nature\n4.Moves \n\n")
 
-    if re.search(r'[^1-3]', user_input):
+    if re.search(r'[^1-4]', user_input):
         menu()
     elif user_input == "1":
         pokemon = input("Enter Pokemon name: ")
-        info = input("1. Evolution: \n2. Generation: \n3. Stats\n4. Location\n5. Ability\n\n")
-        if re.search(r'[^1-5]', user_input):
+        info = input("1. Evolution: \n2. Generation: \n3. Stats\n4. Location\n5. Ability\n6. Moveset\n\n")
+        if re.search(r'[^1-6]', user_input):
             menu()
         elif info == "1":  
             (evolution(pokemon))
@@ -142,13 +158,18 @@ def menu():
             (location(pokemon))
         elif info == "5":
             (pokemon_abilities(pokemon))
+        elif info == "6":
+            (moveset(pokemon))
     elif user_input == "2":
         ability = input("Enter an ability: \n\n")
         abilities(ability)
     elif user_input == "3":
         nature = input("Enter a nature: \n\n")
         nature_lookup(nature)
+    elif user_input == "4":
+        move = input("Enter a move: \n\n")
+        moves(move)
     else:
         menu()
-
+    
 menu()
